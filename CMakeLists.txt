@@ -1,41 +1,44 @@
-cmake_minimum_required(VERSION 2.8.9)
+cmake_minimum_required(VERSION 3.0)
+#TODO bump to a newer version that works with the below as minimum
 
-#no uplink on x86 ?
-if (NOT ${ARCH} STREQUAL "i686")
-add_definitions(-DARCH_${ARCH})
-add_definitions(-DARCH="${ARCH}")
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+#get arch the proper cmake way
+if (NOT DEFINED ARCH)
+  set(ARCH ${CMAKE_HOST_SYSTEM_PROCESSOR})
+endif()
+
+add_definitions(-DARCH_${ARCH})
+add_definitions(-DARCH="${ARCH}")
+
+
 option(LIVEUPDATE "Enable liveupdate" ON)
 option(TLS "Enable secure connections" ON)
 
-if(CONAN_EXPORTED) # in conan local cache
-  # standard conan installation, deps will be defined in conanfile.py
-  # and not necessary to call conan again, conan is already running
+if (EXISTS ${CMAKE_CURRENT_BINARY_DIR}/conanbuildinfo.cmake)
   include(${CMAKE_CURRENT_BINARY_DIR}/conanbuildinfo.cmake)
   conan_basic_setup()
-  #TODO depend on includeos and remove this
-  include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../api)
 else()
-  include(${CMAKE_CURRENT_BINARY_DIR}/conanbuildinfo.cmake)
-  conan_basic_setup()
-
-  set(LIVEUPDATE True)
-  #TODO depend on includeos and remove this
-  include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../api)
-  include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../src/include)
-  #include_directories(${INCLUDEOS_ROOT}/api/posix)
-  #include_directories(${INCLUDEOS_ROOT}/src/include)
-  #include_directories(${INCLUDEOS_ROOT}/api)
-
-  #dependencies
-  #include_directories(${INCLUDEOS_ROOT}/lib/LiveUpdate)
-  #include_directories(${S2N_INCLUDE})
-  #set(INCLUDE_PREFIX "includeos/")
-  #set(LIB_PREFIX "includeos/${ARCH}/")
+  if (NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Release)
+  endif()
+  if (CONAN_PROFILE)
+    set(CONANPROFILE PROFILE ${CONAN_PROFILE})
+  endif()
+  if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
+     message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
+     file(DOWNLOAD "https://github.com/conan-io/cmake-conan/raw/v0.13/conan.cmake"
+                   "${CMAKE_BINARY_DIR}/conan.cmake")
+  endif()
+  include(${CMAKE_BINARY_DIR}/conan.cmake)
+  conan_cmake_run(
+    CONANFILE conanfile.py
+    BASIC_SETUP
+    ${CONANPROFILE}
+  )
 endif()
 
 set(LIBRARY_NAME "uplink")
@@ -64,4 +67,3 @@ install(TARGETS ${LIBRARY_NAME} DESTINATION ${LIB_PREFIX}plugins)
 # Uplink log driver
 add_library(uplink_log STATIC uplink_log.cpp)
 install(TARGETS uplink_log DESTINATION ${LIB_PREFIX}drivers)
-endif()

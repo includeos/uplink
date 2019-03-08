@@ -24,6 +24,7 @@ class UplinkConan(ConanFile):
     }
 
     def requirements(self):
+        self.requires("includeos/[>=0.14.0,include_prerelease=True]@{}/{}".format(self.user,self.channel))
         if (self.options.liveupdate):
             self.requires("liveupdate/{}@{}/{}".format(self.version,self.user,self.channel))
         if (self.options.tls):
@@ -37,7 +38,7 @@ class UplinkConan(ConanFile):
 
     def source(self):
         repo = tools.Git(folder="includeos")
-        repo.clone("https://github.com/hioa-cs/IncludeOS.git",branch="conan")
+        repo.clone("https://github.com/hioa-cs/IncludeOS.git",branch="dev")
 
     def _arch(self):
         return {
