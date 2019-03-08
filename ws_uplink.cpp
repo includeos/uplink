@@ -82,7 +82,7 @@ namespace uplink {
       heartbeat_timer({this, &WS_uplink::on_heartbeat_timer})
   {
 #if defined(LIVEUPDATE)
-    if(liu::LiveUpdate::is_resumable() && kernel::is_live_updated())
+    if(liu::LiveUpdate::is_resumable() && liu::LiveUpdate::os_is_liveupdated())
     {
       MYINFO("Found resumable state, try restoring...");
       liu::LiveUpdate::resume("uplink", {this, &WS_uplink::restore});

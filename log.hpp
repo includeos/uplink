@@ -21,9 +21,11 @@
 
 #include <util/fixed_vector.hpp>
 #include <kernel/events.hpp>
-//#include <kernel/os.hpp>
-#include <kernel.hpp>
 #include <common>
+
+namespace kernel {
+   static bool is_booted();
+}
 
 namespace uplink {
 
