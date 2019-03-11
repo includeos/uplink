@@ -32,22 +32,12 @@ pipeline {
           }
         }
 
-        /*
-        stage('Build uplink') {
-          steps {
-            sh script: "mkdir -p build", label: "Setup"
-            sh script: "cd build; conan install .. -pr $PROFILE_x86_64 -u", label: "conan install"
-            //sh script: "conan link .. $USER/$CHAN --layout=../layout.txt"
-            sh script: "cd build; cmake ..", label: "cmake configure"
-            sh script: "cd build; make -j $CPUS", label: "Make"
-          }
-        }*/
-
         stage('Build package') {
           steps {
             build_conan_package("$PROFILE_x86_64")
           }
         }
+        /* TODO build and link starbase ?
         stage('build example') {
           steps {
             sh script: "mkdir -p build_example", label: "Setup"
@@ -57,7 +47,7 @@ pipeline {
             //sh script: "cd build_example; source activate.sh; cmake ../unit/integration/simple", label: "cmake configure"
             //sh script: "cd build_example; source activate.sh; make", label: "build"
           }
-        }
+        }*/
       }
     }
     stage('Deploy package pipeline') {
