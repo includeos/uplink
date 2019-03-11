@@ -1,71 +1,16 @@
-cmake_minimum_required(VERSION 2.8.9)
+cmake_minimum_required(VERSION 3.8.0)
 
-# IncludeOS install location
-if (NOT DEFINED ENV{INCLUDEOS_PREFIX})
-  set(ENV{INCLUDEOS_PREFIX} /usr/local)
+project (starbase C CXX)
+
+include(${CMAKE_CURRENT_BINARY_DIR}/conanbuildinfo.cmake OPTIONAL RESULT_VARIABLE HAS_CONAN)
+if (NOT HAS_CONAN)
+  message(FATAL_ERROR "missing conanbuildinfo.cmake did you forget to run conan install ?")
 endif()
+conan_basic_setup()
 
-# Use toolchain (if needed)
-include($ENV{INCLUDEOS_PREFIX}/includeos/pre.service.cmake)
+include(os)
 
-
-# Name of your project
-project (starbase)
-
-# Human-readable name of your service
-set(SERVICE_NAME "IncludeOS Starbase")
-
-# Name of your service binary
-set(BINARY       "starbase")
-
-# Source files to be linked with OS library parts to form bootable image
-set(SOURCES
-  service.cpp # ...add more here
-  )
-
-#
-# Service CMake options
-# (uncomment to enable)
-#
-
-# MISC:
-
-# To add your own include paths:
-# set(LOCAL_INCLUDES ".")
-
-# Adding memdisk (expects my.disk to exist in current dir):
-# set(MEMDISK ${CMAKE_SOURCE_DIR}/my.disk)
-
-# DRIVERS / PLUGINS:
-
-set(DRIVERS
-  virtionet
-  vmxnet3
-  uplink_log
-  boot_logger
-  e1000
-  timestamps
-  )
-
-set(PLUGINS
-  uplink
-  autoconf
-  system_log
-  )
-
-set(STDOUT
-  vga_output
-  )
-
-# THIRD PARTY LIBRARIES:
-
-set(LIBRARIES
-  libliveupdate.a  # path to full library
-  )
-
-
-# include service build script
-include($ENV{INCLUDEOS_PREFIX}/includeos/post.service.cmake)
-
-#install_certificates(disk/certs)
-#diskbuilder(disk)
+os_add_executable(starbase "Starbase" service.cpp)
+os_add_drivers(starbase virtionet vmxnet3 e1000 uplink_log boot_logger timestamps)
+os_add_plugins(starbase autoconf system_log)
+os_add_stdout(starbase vga_output)
