@@ -66,7 +66,7 @@ class UplinkConan(ConanFile):
         cmake.definitions['ARCH']=self._arch()
         cmake.definitions['LIVEUPDATE']=self.options.liveupdate
         cmake.definitions['TLS']=self.options.tls
-        cmake.configure(source_folder=self.source_folder+"/IncludeOS/lib/uplink")
+        cmake.configure(source_folder=self.source_folder)
         return cmake
 
     def build(self):
