@@ -15,8 +15,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "transport.hpp"
-#include "common.hpp"
+#include <uplink/transport.hpp>
+#include <uplink/common.hpp>
 
 namespace uplink {
 
@@ -24,7 +24,7 @@ Header Header::parse(const char* data)
 {
   Expects(data != nullptr);
   return Header{
-    static_cast<Transport_code>(data[0]), 
+    static_cast<Transport_code>(data[0]),
     *(reinterpret_cast<const uint32_t*>(&data[1]))
   };
 }
@@ -44,7 +44,7 @@ void Transport_parser::parse(const char* data, size_t len)
   else
   {
     transport_ = std::make_unique<Transport>(Header::parse(data));
-    
+
     if(on_header)
       on_header(transport_->header());
 

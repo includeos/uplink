@@ -15,14 +15,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "log.hpp"
-#include <os>
+#include <uplink/uplink.hpp>
+#include <uplink/common.hpp>
+#include <os.hpp>
 
-// Initialize the log at OS start (global constructor)
-// and hook it up to OS stdout.
-static struct Autoreg_log {
-  Autoreg_log() {
-    auto& log = uplink::Log::get();
-    os::add_stdout({log, &uplink::Log::log});
+static void setup_uplink_plugin()
+{
+  try
+  {
+    uplink::get();
   }
-} autoreg_log;
+  catch(const std::exception& e)
+  {
+    MYINFO("Rebooting");
+    os::reboot();
+  }
+}
+
+__attribute__((constructor))
+void register_plugin_uplink(){
+  os::register_plugin(setup_uplink_plugin, "Uplink");
+}

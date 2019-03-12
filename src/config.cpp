@@ -16,8 +16,8 @@
 // limitations under the License.
 
 #include <config>
-#include "config.hpp"
-#include "common.hpp"
+#include <uplink/config.hpp>
+#include <uplink/common.hpp>
 #include <net/interfaces.hpp>
 
 #ifndef RAPIDJSON_HAS_STDSTRING
