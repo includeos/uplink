@@ -14,8 +14,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "uplink.hpp"
-#include "common.hpp"
+#include <uplink/uplink.hpp>
+#include <uplink/common.hpp>
 
 namespace uplink {
 

@@ -15,8 +15,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "ws_uplink.hpp"
-#include "common.hpp"
+#include <uplink/ws_uplink.hpp>
+#include <uplink/log.hpp>
+#include <uplink/common.hpp>
 
 #ifndef RAPIDJSON_HAS_STDSTRING
   #define RAPIDJSON_HAS_STDSTRING 1
@@ -36,7 +37,6 @@
 #include <kernel/cpuid.hpp>
 #include <statman>
 #include <config>
-#include "log.hpp"
 #include <system_log>
 #include <isotime>
 #include <net/interfaces>

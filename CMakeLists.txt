@@ -14,6 +14,7 @@ endif()
 add_definitions(-DARCH_${ARCH})
 add_definitions(-DARCH="${ARCH}")
 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 option(LIVEUPDATE "Enable liveupdate" ON)
 option(TLS "Enable secure connections" ON)
@@ -44,18 +45,21 @@ endif()
 set(LIBRARY_NAME "uplink")
 
 set(SOURCES
-  transport.cpp
-  ws_uplink.cpp
-  register_plugin.cpp
-  config.cpp
-  uplink.cpp
+  src/transport.cpp
+  src/ws_uplink.cpp
+  src/register_plugin.cpp
+  src/config.cpp
+  src/uplink.cpp
   )
 
-# Install headers
-install(DIRECTORY . DESTINATION ${INCLUDE_PREFIX}include/uplink
-  FILES_MATCHING PATTERN "*.hpp"
-  PATTERN "starbase" EXCLUDE
-  PATTERN "build" EXCLUDE)
+set(HDRS
+  include/uplink/common.hpp
+  include/uplink/config.hpp
+  include/uplink/log.hpp
+  include/uplink/transport.hpp
+  include/uplink/uplink.hpp # only necessary header actually
+  include/uplink/ws_uplink.hpp
+  )
 
 # Uplink library
 add_library(${LIBRARY_NAME} STATIC ${SOURCES})
@@ -65,5 +69,13 @@ endif()
 install(TARGETS ${LIBRARY_NAME} DESTINATION ${LIB_PREFIX}plugins)
 
 # Uplink log driver
-add_library(uplink_log STATIC uplink_log.cpp)
+add_library(uplink_log STATIC src/uplink_log.cpp)
 install(TARGETS uplink_log DESTINATION ${LIB_PREFIX}drivers)
+
+# Install headers (?)
+set_target_properties(${LIBRARY_NAME} PROPERTIES PUBLIC_HEADER "${HDRS}")
+
+install(TARGETS ${LIBRARY_NAME}
+        ARCHIVE DESTINATION lib
+        PUBLIC_HEADER DESTINATION include/uplink
+)
