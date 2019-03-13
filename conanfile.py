@@ -39,11 +39,13 @@ class UplinkConan(ConanFile):
 
     options={
         "liveupdate":[True,False],
-        "tls": [True,False]
+        "tls": [True,False],
+        "uplink_log": [True,False]
     }
     default_options={
         "liveupdate":True,
-        "tls":True
+        "tls":True,
+        "uplink_log":True
     }
 
     def requirements(self):
@@ -54,16 +56,9 @@ class UplinkConan(ConanFile):
             #this will put a dependency requirement on openssl
             self.requires("s2n/1.1.1@{}/{}".format(self.user,self.channel))
 
-    def _arch(self):
-        return {
-            "x86":"i686",
-            "x86_64":"x86_64",
-            "armv8" : "aarch64"
-        }.get(str(self.settings.arch))
-
     def _cmake_configure(self):
         cmake = CMake(self)
-        cmake.definitions['ARCH']=self._arch()
+        cmake.definitions['UPLINK_LOG']=self.options.uplink_log
         cmake.definitions['LIVEUPDATE']=self.options.liveupdate
         cmake.definitions['TLS']=self.options.tls
         cmake.configure(source_folder=self.source_folder)
@@ -79,10 +74,12 @@ class UplinkConan(ConanFile):
 
     def package_info(self):
         self.cpp_info.libdirs = [
-            'drivers',
             'plugins'
         ]
-        self.cpp_info.libs=['uplink','uplink_log']
+        self.cpp_info.libs=['uplink']
+        if self.options.uplink_log:
+            self.cpp_info.libdirs.append('drivers')
+            self.cpp_info.libs.append('uplink_log')
 
     def deploy(self):
         self.copy("*.a",dst="drivers",src="drivers")

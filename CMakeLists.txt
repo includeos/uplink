@@ -18,6 +18,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 option(LIVEUPDATE "Enable liveupdate" ON)
 option(TLS "Enable secure connections" ON)
+option(UPLINK_LOG "Enable logging over uplink" ON)
 
 if (EXISTS ${CMAKE_CURRENT_BINARY_DIR}/conanbuildinfo.cmake)
   include(${CMAKE_CURRENT_BINARY_DIR}/conanbuildinfo.cmake)
@@ -57,7 +58,7 @@ set(HDRS
   include/uplink/config.hpp
   include/uplink/log.hpp
   include/uplink/transport.hpp
-  include/uplink/uplink.hpp # only necessary header actually
+  include/uplink/uplink.hpp # including this pulls in the rest
   include/uplink/ws_uplink.hpp
   )
 
@@ -66,16 +67,19 @@ add_library(${LIBRARY_NAME} STATIC ${SOURCES})
 if (LIVEUPDATE)
   set_target_properties(${LIBRARY_NAME} PROPERTIES COMPILE_DEFINITIONS "LIVEUPDATE")
 endif()
-install(TARGETS ${LIBRARY_NAME} DESTINATION ${LIB_PREFIX}plugins)
 
-# Uplink log driver
-add_library(uplink_log STATIC src/uplink_log.cpp)
-install(TARGETS uplink_log DESTINATION ${LIB_PREFIX}drivers)
 
 # Install headers (?)
 set_target_properties(${LIBRARY_NAME} PROPERTIES PUBLIC_HEADER "${HDRS}")
 
 install(TARGETS ${LIBRARY_NAME}
-        ARCHIVE DESTINATION lib
+        ARCHIVE DESTINATION plugins
         PUBLIC_HEADER DESTINATION include/uplink
-)
+  )
+
+# Uplink log driver
+if(UPLINK_LOG)
+  add_library(uplink_log STATIC src/uplink_log.cpp)
+  install(TARGETS uplink_log ARCHIVE DESTINATION drivers)
+endif()
+
