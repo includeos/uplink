@@ -48,6 +48,8 @@ class UplinkConan(ConanFile):
         "uplink_log":True
     }
 
+    no_copy_source=True
+
     def requirements(self):
         self.requires("includeos/[>=0.14.0,include_prerelease=True]@{}/{}".format(self.user,self.channel))
         if (self.options.liveupdate):
