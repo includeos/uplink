@@ -44,8 +44,7 @@ pipeline {
         build_all_variations("$PROFILE_x86_64")
       }
     }
-    /* TODO build and link starbase or some other example?
-    stage('build example') {
+    stage('Build starbase') {
       steps {
         sh script: "mkdir -p build_example", label: "Setup"
         sh script: "cd build_example; conan install ../starbase -pr $PROFILE_x86_64 -u", label: "conan_install"
@@ -55,7 +54,6 @@ pipeline {
         //sh script: "cd build_example; source activate.sh; make", label: "build"
       }
     }
-    */
     stage('Upload to bintray') {
       when {
         anyOf {
