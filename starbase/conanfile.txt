@@ -2,7 +2,10 @@
 uplink/[>=0.14.0,include_prerelease=True]@includeos/test
 
 [build_requires]
-vmbuild/0.13.0@includeos/test
+vmrunner/[>=0.14.0,include_prerelease=True]@includeos/test
+vmbuild/[>=0.14.0,include_prerelease=True]@includeos/test
+chainloader/[>=0.14.0,include_prerelease=True]@includeos/test
+diskbuilder/[>=0.14.0,include_prerelease=True]@includeos/test
 
 [generators]
 virtualenv

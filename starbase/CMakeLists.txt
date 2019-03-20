@@ -11,6 +11,6 @@ conan_basic_setup()
 include(os)
 
 os_add_executable(starbase "Starbase" service.cpp)
-os_add_drivers(starbase virtionet vmxnet3 e1000 uplink_log boot_logger timestamps)
+os_add_drivers(starbase virtionet vmxnet3 e1000 boot_logger timestamps)
 os_add_plugins(starbase autoconf system_log)
-os_add_stdout(starbase vga_output)
+os_add_stdout(starbase default_stdout vga_output)
