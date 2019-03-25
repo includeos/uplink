@@ -31,14 +31,13 @@ class UplinkConan(ConanFile):
     }
 
     no_copy_source=True
+    def package_id(self):
+        self.info.requires.major_mode()
 
     def requirements(self):
-        self.requires("includeos/[>=0.14.0,include_prerelease=True]@{}/{}".format(self.user,self.channel))
+        self.requires("includeos/[>=0.14.0,include_prerelease=True]@includeos/latest")
         if (self.options.liveupdate):
-            self.requires("liveupdate/[>=0.14.0,include_prerelease=True]@{}/{}".format(self.user,self.channel))
-        if (self.options.tls):
-            #this will put a dependency requirement on openssl
-            self.requires("s2n/0.8@includeos/stable")
+            self.requires("liveupdate/[>=0.14.0,include_prerelease=True]@includeos/latest")
 
     def _cmake_configure(self):
         cmake = CMake(self)
