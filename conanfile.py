@@ -8,7 +8,7 @@ class UplinkConan(ConanFile):
     license = 'Apache-2.0'
     version = conan_tools.git_get_semver()
     description = 'Run your application with zero overhead'
-    generators = 'cmake'
+    generators = 'cmake','virtualenv'
     url = "http://www.includeos.org/"
     scm = {
         "type" : "git",
@@ -57,11 +57,11 @@ class UplinkConan(ConanFile):
 
     def package_info(self):
         self.cpp_info.libdirs = [
-            'plugins'
+            'drivers'
         ]
         self.cpp_info.libs=['uplink']
         if self.options.uplink_log:
-            self.cpp_info.libdirs.append('drivers')
+            self.cpp_info.libdirs.append('plugins')
             self.cpp_info.libs.append('uplink_log')
 
     def deploy(self):

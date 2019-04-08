@@ -45,7 +45,7 @@ pipeline {
       when { changeRequest() }
       steps {
         dir('starbase_build') {
-          sh script: "conan install $SRC/starbase -pr $PROFILE_x86_64 -u", label: "conan_install"
+          sh script: "conan install $SRC/starbase -pr $PROFILE_x86_64", label: "conan_install"
           sh script: ". ./activate.sh; cmake $SRC/starbase",label: "cmake configure"
           sh script: "make -j $CPUS", label: "building example"
         }

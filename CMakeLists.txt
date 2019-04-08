@@ -64,6 +64,12 @@ set(HDRS
 
 # Uplink library
 add_library(${LIBRARY_NAME} STATIC ${SOURCES})
+set_target_properties(${LIBRARY_NAME}
+  PROPERTIES
+  ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/drivers
+  ARCHIVE_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/drivers
+  ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/drivers
+)
 if (LIVEUPDATE)
   set_target_properties(${LIBRARY_NAME} PROPERTIES COMPILE_DEFINITIONS "LIVEUPDATE")
 endif()
@@ -80,6 +86,11 @@ install(TARGETS ${LIBRARY_NAME}
 # Uplink log driver
 if(UPLINK_LOG)
   add_library(uplink_log STATIC src/uplink_log.cpp)
+  set_target_properties(uplink_log
+    PROPERTIES
+    ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/plugins
+    ARCHIVE_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/plugins
+    ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/plugins
+  )
   install(TARGETS uplink_log ARCHIVE DESTINATION drivers)
 endif()
-
