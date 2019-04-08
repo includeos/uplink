@@ -22,10 +22,9 @@
 #include <util/fixed_vector.hpp>
 #include <kernel/events.hpp>
 #include <common>
+#include <os>
 
-namespace kernel {
-   static bool is_booted();
-}
+
 
 namespace uplink {
 
@@ -67,7 +66,7 @@ public:
 
       // if we havent already queued a flush, do it
       // note: OS need to be booted for Events to work
-      if(not queued and kernel::is_booted())
+      if(not queued and os::is_booted())
         queue_flush();
     }
   }
