@@ -79,7 +79,8 @@ namespace uplink {
       inet_{config_.get_stack()},
       id_{__arch_system_info().uuid},
       parser_({this, &WS_uplink::handle_transport}),
-      heartbeat_timer({this, &WS_uplink::on_heartbeat_timer})
+      heartbeat_timer({this, &WS_uplink::on_heartbeat_timer}),
+      stats_timer({this, &WS_uplink::send_stats_interval})
   {
 #if defined(LIVEUPDATE)
     if(liu::LiveUpdate::is_resumable() && liu::LiveUpdate::os_is_liveupdated())
@@ -105,6 +106,8 @@ namespace uplink {
     if(config_.serialize_ct)
       liu::LiveUpdate::register_partition("conntrack", {this, &WS_uplink::store_conntrack});
 #endif
+
+    CHECK(config_.send_stats > 0, "Sending stats on interval [%i ms]", config_.send_stats);
 
     if(inet_.is_configured())
     {
@@ -295,11 +298,15 @@ namespace uplink {
       SystemLog::clear_flags();
       send_message(Transport_code::PANIC, log.data(), log.size());
     }
+
+    if(config_.send_stats > 0)
+      send_stats_interval();
   }
 
   void WS_uplink::handle_ws_close(uint16_t code)
   {
     (void) code;
+    stats_timer.stop();
     auth();
   }
 

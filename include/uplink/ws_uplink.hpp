@@ -93,6 +93,8 @@ private:
   Timer heartbeat_timer;
   RTC::timestamp_t last_ping;
 
+  Timer stats_timer;
+
   RTC::timestamp_t update_time_taken = 0;
 
   void inject_token(http::Request& req, http::Basic_client::Options&, const http::Basic_client::Host)
@@ -117,6 +119,13 @@ private:
   bool missing_heartbeat()
   { return last_ping < RTC::now() - heartbeat_interval.count(); }
   void on_heartbeat_timer();
+
+  void send_stats_interval()
+  {
+    Expects(config_.send_stats > 0);
+    send_stats();
+    stats_timer.start(std::chrono::milliseconds(config_.send_stats));
+  }
 
   void parse_transport(net::WebSocket::Message_ptr msg);
 #if defined(LIVEUPDATE)

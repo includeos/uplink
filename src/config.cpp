@@ -114,6 +114,11 @@ namespace uplink {
       config_.verify_certs = cfg["verify"].GetBool();
     }
 
+    if(cfg.HasMember("send_stats"))
+    {
+      config_.send_stats = cfg["send_stats"].GetInt();
+    }
+
     return config_;
   }
 
@@ -151,6 +156,9 @@ namespace uplink {
 
     writer.Key("serialize_ct");
     writer.Bool(serialize_ct);
+
+    writer.Key("send_stats");
+    writer.Int(send_stats);
 
     writer.EndObject();
 

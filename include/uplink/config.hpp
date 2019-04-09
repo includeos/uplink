@@ -39,6 +39,7 @@ namespace uplink {
     bool        reboot        = true;
     bool        ws_logging    = true;
     bool        serialize_ct  = false;
+    int         send_stats    = 0;
 
     static Config read();
 
