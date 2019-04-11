@@ -616,6 +616,24 @@ namespace uplink {
     Writer<StringBuffer> writer{buf};
 
     writer.StartArray();
+
+    using namespace std::chrono;
+    writer.StartObject();
+    int64_t steady_ms = duration_cast<milliseconds>(steady_clock::now().time_since_epoch()).count();
+    writer.Key("name");
+    writer.String("monolitic_ts_ms");
+    writer.Key("value");
+    writer.Int64(steady_ms);
+    writer.EndObject();
+
+    writer.StartObject();
+    int64_t system_ms = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+    writer.Key("name");
+    writer.String("rtc_ts_ms");
+    writer.Key("value");
+    writer.Int64(system_ms);
+    writer.EndObject();
+
     auto& statman = Statman::get();
     for(auto it = statman.begin(); it != statman.end(); ++it)
     {
