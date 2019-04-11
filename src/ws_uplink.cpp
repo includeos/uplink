@@ -634,6 +634,14 @@ namespace uplink {
     writer.Int64(system_ms);
     writer.EndObject();
 
+
+    writer.StartObject();
+    writer.Key("name");
+    writer.String("total_memuse");
+    writer.Key("value");
+    writer.Uint64(os::total_memuse());
+    writer.EndObject();
+
     auto& statman = Statman::get();
     for(auto it = statman.begin(); it != statman.end(); ++it)
     {
