@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.0)
 #TODO bump to a newer version that works with the below as minimum
+set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
 
+project(uplink C CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -13,6 +15,10 @@ endif()
 
 add_definitions(-DARCH_${ARCH})
 add_definitions(-DARCH="${ARCH}")
+
+set(TRIPLE "${ARCH}-pc-linux-elf")
+set(CMAKE_CXX_COMPILER_TARGET ${TRIPLE})
+set(CMAKE_C_COMPILER_TARGET ${TRIPLE})
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
