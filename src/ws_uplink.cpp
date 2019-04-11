@@ -621,7 +621,7 @@ namespace uplink {
     writer.StartObject();
     int64_t steady_ms = duration_cast<milliseconds>(steady_clock::now().time_since_epoch()).count();
     writer.Key("name");
-    writer.String("monolitic_ts_ms");
+    writer.String("monotonic_ts_ms");
     writer.Key("value");
     writer.Int64(steady_ms);
     writer.EndObject();
